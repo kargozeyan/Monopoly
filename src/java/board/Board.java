@@ -1,14 +1,11 @@
 package board;
 
-import board.card.Card;
+import board.card.CardStack;
 import board.cell.*;
 
-import java.lang.reflect.Array;
-import java.util.Stack;
-
 public class Board {
-    private Stack<Card> chanceCards;
-    private Stack<Card> chestCards;
+    private CardStack chanceCards;
+    private CardStack chestCards;
 
     private Cell[] cells;
 
