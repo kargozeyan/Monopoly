@@ -1,11 +1,13 @@
 package board;
 
 import board.card.CardStack;
+import board.card.ChanceStack;
+import board.card.ChestStack;
 import board.cell.*;
 
 public class Board {
-    private CardStack chanceCards;
-    private CardStack chestCards;
+    private ChanceStack chanceCards = new ChanceStack();
+    private ChestStack chestCards = new ChestStack();
 
     private Cell[] cells;
 
