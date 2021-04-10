@@ -1,7 +1,6 @@
 package board.card;
 
 import java.Player;
-import java.util.function.Function;
 
 public class Card {
     String message;

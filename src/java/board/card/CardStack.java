@@ -1,8 +1,11 @@
 package board.card;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Stack;
 
-public class CardStack extends Stack<Card> {
+class CardStack extends Stack<Card> {
     private final List<Card> cards;
 
     public CardStack(Card[] cards) {
