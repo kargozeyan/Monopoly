@@ -1,4 +1,4 @@
-package board.cell;
+package monopoly.game.board.cell;
 
 public enum ColorGroup {
     GREEN,

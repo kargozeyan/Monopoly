@@ -1,6 +1,6 @@
-package board.cell;
+package monopoly.game.board.cell;
 
-import java.Player;
+import monopoly.game.Player;
 
 public class Tax extends Cell {
     private final int tax;

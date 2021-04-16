@@ -1,6 +1,6 @@
-package board.cell;
+package monopoly.game.board.cell;
 
-import java.Player;
+import monopoly.game.Player;
 
 abstract public class PricedCell extends Cell {
     private int price;

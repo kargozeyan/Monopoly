@@ -1,3 +1,4 @@
-package java;
+package monopoly.game;
+
 public class Player {
 }

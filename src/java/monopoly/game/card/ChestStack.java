@@ -1,4 +1,4 @@
-package board.card;
+package monopoly.game.card;
 
 public class ChestStack extends CardStack{
     public ChestStack() {

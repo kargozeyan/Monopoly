@@ -1,6 +1,6 @@
-package board.card;
+package monopoly.game.card;
 
-import java.Player;
+import monopoly.game.Player;
 
 public class Card {
     String message;

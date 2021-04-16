@@ -1,17 +1,13 @@
-package board;
+package monopoly.game.board;
 
-import board.card.CardStack;
-import board.card.ChanceStack;
-import board.card.ChestStack;
-import board.cell.*;
+import monopoly.game.card.ChanceStack;
+import monopoly.game.card.ChestStack;
+import monopoly.game.board.cell.*;
 
 public class Board {
-    private ChanceStack chanceCards = new ChanceStack();
-    private ChestStack chestCards = new ChestStack();
-
     private Cell[] cells;
 
-    Board() {
+    public Board() {
         cells = new Cell[]{
                 new CornerCell("Go"),
                 new Property("Vine Street", 0, ColorGroup.BROWN),

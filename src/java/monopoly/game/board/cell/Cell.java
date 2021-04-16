@@ -1,6 +1,6 @@
-package board.cell;
+package monopoly.game.board.cell;
 
-import java.Player;
+import monopoly.game.Player;
 
 public abstract class Cell {
     private final String name;

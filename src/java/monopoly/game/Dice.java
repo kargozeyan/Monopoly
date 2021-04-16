@@ -1,4 +1,4 @@
-package board;
+package monopoly.game;
 
 import java.util.Random;
 
@@ -12,5 +12,6 @@ public class Dice {
 
         return new int[]{first, second};
     }
+
 
 }

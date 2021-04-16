@@ -1,6 +1,6 @@
-package board.cell;
+package monopoly.game.board.cell;
 
-import java.Player;
+import monopoly.game.Player;
 
 public class Station extends PricedCell {
     public Station(String name, int price) {
