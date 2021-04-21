@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.shape.Polygon?>
+<fx:root type="VBox" fx:id="root" xmlns:fx="http://javafx.com/fxml/1" style="-fx-background-color: #f6f6f6"
+         prefHeight="164"
+         prefWidth="96" xmlns="http://javafx.com/javafx/11.0.1">
+
+    <Rectangle id="colorGroup" fill="#7c1e1e" height="40" width="96"/>
+    <VBox style="-fx-min-height:124;-fx-alignment: center; ">
+        <Text styleClass="location_title" fx:id="name" textAlignment="CENTER" wrappingWidth="80" text="THE NAME OF LOCATION"/>
+        <Text styleClass="location_price" fx:id="price" textAlignment="CENTER" wrappingWidth="80" text="200$"/>
+    </VBox>
+</fx:root>

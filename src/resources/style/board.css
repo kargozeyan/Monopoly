@@ -1,0 +1,9 @@
+.location_title {
+    -fx-font-family: Montserrat;
+    -fx-font-weight: 600
+}
+
+.location_price {
+    -fx-font-weight: bold;
+    -fx-font-family: Montserrat
+}
