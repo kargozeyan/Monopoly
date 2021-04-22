@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 <fx:root type="VBox" xmlns="http://javafx.com/javafx"
          xmlns:fx="http://javafx.com/fxml"
          alignment="CENTER"
-         prefHeight="96" prefWidth="164">
+         prefHeight="164" prefWidth="96" spacing="5">
     <ImageView fx:id="img"/>
-    <Text fx:id="name"/>
-    <Text fx:id="price"/>
+    <Text fx:id="name" wrappingWidth="80" textAlignment="CENTER"/>
+    <Text fx:id="price" />
 </fx:root>

@@ -16,6 +16,7 @@ public abstract class Cell {
 
     /**
      * this method is invoked when a player lands on a cell
+     *
      * @param player the player that landed on cell
      */
     public abstract void onLand(Player player);
