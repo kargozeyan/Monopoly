@@ -3,5 +3,7 @@ module Monopoly {
     requires javafx.controls;
     requires javafx.fxml;
 
-    opens monopoly;
+    opens monopoly.ui.custom_node;
+    opens monopoly.ui.scene_controllers;
+    opens monopoly.ui;
 }

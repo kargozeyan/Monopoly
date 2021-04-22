@@ -15,7 +15,6 @@ class BaseNode extends VBox {
 
     public BaseNode(String fxml, Alignment alignment) throws IOException {
         FXMLLoader loader = new FXMLLoader();
-        System.out.println(FXUtils.getFXML(fxml).toExternalForm());
         loader.setLocation(FXUtils.getFXML(fxml));
         loader.setRoot(this);
         loader.setController(this);
