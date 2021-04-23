@@ -3,9 +3,11 @@ package monopoly.ui.scene_controllers;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
 import monopoly.game.board.Board;
@@ -14,6 +16,7 @@ import monopoly.ui.custom_node.BaseNode;
 import monopoly.ui.custom_node.CCNode;
 import monopoly.ui.custom_node.OtherNode;
 import monopoly.ui.custom_node.PropertyNode;
+import monopoly.utils.FXUtils;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -34,12 +37,10 @@ public class GameController extends BaseController implements Initializable {
     //    @FXML
     private HBox bottom = new HBox();
 
-    public GameController() {
-        root.getScene().getStylesheets().add("https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap");
-    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        root.getStylesheets().add(FXUtils.getCSS("board.css"));
         Cell[] cells = new Board().getCells();
         int bottomStart = 0;
         int leftStart = cells.length / 4;
@@ -69,6 +70,14 @@ public class GameController extends BaseController implements Initializable {
         root.getChildren().add(right);
 
         rotate(cells.length / 4 - 1);
+
+        ImageView logo = new ImageView(FXUtils.getImage("monopoly.png"));
+        int margin = 48;
+        logo.setLayoutX(BaseNode.HEIGHT + margin);
+        logo.setLayoutY(BaseNode.HEIGHT + 4 * BaseNode.WIDTH);
+        logo.setFitWidth(BaseNode.WIDTH * 9 - margin * 2);
+        logo.setPreserveRatio(true);
+        root.getChildren().add(logo);
     }
 
     private void rotate(int cellCount) {
@@ -85,6 +94,18 @@ public class GameController extends BaseController implements Initializable {
             node = new CCNode((CC_Cell) cell);
         } else if (cell instanceof CornerCell) {
             node = new Rectangle(BaseNode.HEIGHT, BaseNode.HEIGHT, Color.GRAY);
+            String name = cell.getName();
+            String image;
+            if (name.equalsIgnoreCase("go")) {
+                image = "go.png";
+            } else if (name.equalsIgnoreCase("go to jail")) {
+                image = "go_to_jail.png";
+            } else if (name.equals("Free Parking")) {
+                image = "free_parking.png";
+            } else {
+                image = "jail.png";
+            }
+            ((Rectangle) node).setFill(new ImagePattern(FXUtils.getImage(image)));
         } else {
             OtherNode other = null;
             if (cell instanceof Tax) {
@@ -92,7 +113,7 @@ public class GameController extends BaseController implements Initializable {
                 other.setImg("tax_" + ((Tax) cell).getTax() + ".png");
             } else if (cell instanceof Utility) {
                 other = new OtherNode(cell.getName(), ((Utility) cell).getPrice());
-                String imageName = cell.getName().equals(Utility.NAME_ELECTRICITY)? "bulb.png" : "water.png";
+                String imageName = cell.getName().equals(Utility.NAME_ELECTRICITY) ? "bulb.png" : "water.png";
                 other.setImg(imageName);
             } else if (cell instanceof Station) {
                 other = new OtherNode(cell.getName(), ((Station) cell).getPrice());
