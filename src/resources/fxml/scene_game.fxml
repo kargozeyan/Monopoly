@@ -3,7 +3,7 @@
 <?import javafx.scene.layout.Pane?>
 <Pane xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="monopoly.ui.scene_controllers.GameController"
+      fx:controller="monopoly.ui.scene_controllers.game.GameController"
       fx:id="root">
 
 </Pane>

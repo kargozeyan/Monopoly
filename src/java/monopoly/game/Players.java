@@ -3,7 +3,7 @@ package monopoly.game;
 import java.util.ArrayList;
 
 public class Players {
-    private ArrayList<Player> players;
+    private ArrayList<Player> players = new ArrayList<>();
 
     private int currentTurn = -1;
 
@@ -16,11 +16,10 @@ public class Players {
     }
 
     public Player next() {
-        currentTurn++;
-        if (currentTurn >= players.size())
-            currentTurn = players.size() - currentTurn;
+        if (++currentTurn >= players.size())
+            currentTurn -= players.size();
+
         Player next = players.get(currentTurn);
-        // TODO if (next.isSkipping) next();
         return next;
     }
 }

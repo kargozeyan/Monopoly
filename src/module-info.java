@@ -6,4 +6,5 @@ module Monopoly {
     opens monopoly.ui.custom_node;
     opens monopoly.ui.scene_controllers;
     opens monopoly.ui;
+    opens monopoly.ui.scene_controllers.game;
 }

@@ -1,8 +1,9 @@
-package monopoly.ui.scene_controllers;
+package monopoly.ui.scene_controllers.game;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -10,38 +11,30 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
-import monopoly.game.board.Board;
+import monopoly.game.Game;
 import monopoly.game.board.cell.*;
-import monopoly.ui.custom_node.BaseNode;
-import monopoly.ui.custom_node.CCNode;
-import monopoly.ui.custom_node.OtherNode;
-import monopoly.ui.custom_node.PropertyNode;
+import monopoly.ui.custom_node.*;
+import monopoly.ui.scene_controllers.BaseController;
 import monopoly.utils.FXUtils;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class GameController extends BaseController implements Initializable {
+public class GameController extends BaseController implements Initializable, GameGUI {
     @FXML
     Pane root;
 
-    //    @FXML
     private HBox left = new HBox();
-
-    //    @FXML
     private HBox right = new HBox();
-
-    //    @FXML
     private HBox top = new HBox();
-
-    //    @FXML
     private HBox bottom = new HBox();
 
+    private Game game = new Game(this);
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         root.getStylesheets().add(FXUtils.getCSS("board.css"));
-        Cell[] cells = new Board().getCells();
+        Cell[] cells = game.getCells();
         int bottomStart = 0;
         int leftStart = cells.length / 4;
         int topStart = 2 * cells.length / 4;
@@ -64,10 +57,7 @@ public class GameController extends BaseController implements Initializable {
         bottom.setLayoutY(BaseNode.HEIGHT + BaseNode.WIDTH * 9);
         bottom.setLayoutX(BaseNode.HEIGHT);
 
-        root.getChildren().add(top);
-        root.getChildren().add(bottom);
-        root.getChildren().add(left);
-        root.getChildren().add(right);
+        root.getChildren().addAll(top, bottom, left, right);
 
         rotate(cells.length / 4 - 1);
 
@@ -78,6 +68,22 @@ public class GameController extends BaseController implements Initializable {
         logo.setFitWidth(BaseNode.WIDTH * 9 - margin * 2);
         logo.setPreserveRatio(true);
         root.getChildren().add(logo);
+
+        Die die1 = new Die(true);
+        Die die2 = new Die(false);
+        die1.setLayoutX(BaseNode.HEIGHT + margin);
+        die2.setLayoutX(die1.getLayoutX() + margin + die1.getWidth());
+        die1.setLayoutY(BaseNode.HEIGHT + 8.5 * BaseNode.WIDTH - margin);
+        die2.setLayoutY(die1.getLayoutY());
+
+        Button rollButton = new Button("Roll Dice");
+        rollButton.setOnAction(event -> {
+            die1.setNumber(5);
+            die2.setNumber(6);
+        });
+        rollButton.setLayoutX(die2.getLayoutX() + margin + die2.getWidth());
+        rollButton.setLayoutY(die2.getLayoutY());
+        root.getChildren().addAll(die1, die2, rollButton);
     }
 
     private void rotate(int cellCount) {

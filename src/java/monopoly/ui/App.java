@@ -14,7 +14,7 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         sceneManager = new SceneManager(stage);
-        sceneManager.changeScene(SceneTag.HOME);
+        sceneManager.changeScene(SceneTag.GAME);
 
         stage.getIcons().add(FXUtils.getImage("icon.png"));
         stage.setMinWidth(1600);
