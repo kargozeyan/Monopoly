@@ -27,13 +27,8 @@ public class HomeController extends BaseController implements Initializable {
     }
 
     @FXML
-    private void onPlayBtnClick() throws IOException {
+    private void onPlayBtnClick() {
         sceneManager.changeScene(SceneTag.GAME);
-    }
-
-    @FXML
-    private void onAboutBtnClick() {
-
     }
 
     @FXML

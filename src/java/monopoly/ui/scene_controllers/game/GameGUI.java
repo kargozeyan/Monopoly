@@ -1,8 +1,7 @@
 package monopoly.ui.scene_controllers.game;
 
 public interface GameGUI {
-//    TODO
-//    void rollDice();
+    void rollDice(int[] numbers);
 //    void moveMarker();
 //    void displayInfo();
 // ...

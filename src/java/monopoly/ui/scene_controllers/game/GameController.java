@@ -12,29 +12,55 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
 import monopoly.game.Game;
+import monopoly.game.Player;
 import monopoly.game.board.cell.*;
 import monopoly.ui.custom_node.*;
 import monopoly.ui.scene_controllers.BaseController;
+import monopoly.ui.scene_controllers.DataReceiver;
 import monopoly.utils.FXUtils;
 
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.ResourceBundle;
 
-public class GameController extends BaseController implements Initializable, GameGUI {
+public class GameController extends BaseController implements Initializable, DataReceiver,GameGUI {
     @FXML
     Pane root;
 
-    private HBox left = new HBox();
-    private HBox right = new HBox();
-    private HBox top = new HBox();
-    private HBox bottom = new HBox();
+    // Parts of board
+    private final HBox left = new HBox();
+    private final HBox right = new HBox();
+    private final HBox top = new HBox();
+    private final HBox bottom = new HBox();
 
-    private Game game = new Game(this);
+    // dice
+    private Die die1, die2;
 
+    // markers
+    private Map<Player, PlayerMarker> markers;
+
+    private final Game game = new Game(this);
+    private int cellCount; // the number of cells in one hbox, excluding corners
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        // adding CSS
         root.getStylesheets().add(FXUtils.getCSS("board.css"));
+
+        // initializing board
+        initBoard();
+        // rotating board parts accordingly
+        rotateHBoxes();
+
+        // init logo and dice
+        initLogo();
+        initDice();
+    }
+
+    private void initBoard() {
         Cell[] cells = game.getCells();
+        cellCount = cells.length / 4 - 1;
+
         int bottomStart = 0;
         int leftStart = cells.length / 4;
         int topStart = 2 * cells.length / 4;
@@ -54,42 +80,41 @@ public class GameController extends BaseController implements Initializable, Gam
             addToBox(rightCell, right, dark);
         }
 
-        bottom.setLayoutY(BaseNode.HEIGHT + BaseNode.WIDTH * 9);
+        bottom.setLayoutY(BaseNode.HEIGHT + BaseNode.WIDTH * cellCount);
         bottom.setLayoutX(BaseNode.HEIGHT);
 
         root.getChildren().addAll(top, bottom, left, right);
+    }
 
-        rotate(cells.length / 4 - 1);
+    private void initLogo() {
+        int margin = 48;
 
         ImageView logo = new ImageView(FXUtils.getImage("monopoly.png"));
-        int margin = 48;
         logo.setLayoutX(BaseNode.HEIGHT + margin);
-        logo.setLayoutY(BaseNode.HEIGHT + 4 * BaseNode.WIDTH);
-        logo.setFitWidth(BaseNode.WIDTH * 9 - margin * 2);
+        logo.setLayoutY(BaseNode.HEIGHT + (cellCount / 2) * BaseNode.WIDTH);
+        logo.setFitWidth(BaseNode.WIDTH * cellCount - margin * 2);
         logo.setPreserveRatio(true);
         root.getChildren().add(logo);
+    }
 
-        Die die1 = new Die(true);
-        Die die2 = new Die(false);
+    private void initDice() {
+        int margin = 48;
+
+        die1 = new Die(true);
+        die2 = new Die(false);
         die1.setLayoutX(BaseNode.HEIGHT + margin);
         die2.setLayoutX(die1.getLayoutX() + margin + die1.getWidth());
         die1.setLayoutY(BaseNode.HEIGHT + 8.5 * BaseNode.WIDTH - margin);
         die2.setLayoutY(die1.getLayoutY());
-
-        Button rollButton = new Button("Roll Dice");
-        rollButton.setOnAction(event -> {
-            die1.setNumber(5);
-            die2.setNumber(6);
-        });
-        rollButton.setLayoutX(die2.getLayoutX() + margin + die2.getWidth());
-        rollButton.setLayoutY(die2.getLayoutY());
-        root.getChildren().addAll(die1, die2, rollButton);
+        die1.setNumber(2);
+        die2.setNumber(2);
+        root.getChildren().addAll(die1, die2);
     }
 
-    private void rotate(int cellCount) {
-        rotateLeft(cellCount);
-        rotateRight(cellCount);
-        rotateTop(cellCount);
+    private void rotateHBoxes() {
+        rotateLeft();
+        rotateRight();
+        rotateTop();
     }
 
     private void addToBox(Cell cell, HBox box, boolean dark) {
@@ -135,28 +160,39 @@ public class GameController extends BaseController implements Initializable, Gam
         box.getChildren().add(0, node);
     }
 
-    private void rotateTop(int cellCount) {
+    private void rotateTop() {
         Rotate rotate = new Rotate();
-        rotate.setPivotX((BaseNode.HEIGHT + 9 * BaseNode.WIDTH) / 2);
+        rotate.setPivotX((BaseNode.HEIGHT + cellCount * BaseNode.WIDTH) / 2);
         rotate.setPivotY(BaseNode.HEIGHT / 2);
         top.getTransforms().add(rotate);
         rotate.setAngle(180);
     }
 
-    private void rotateRight(int cellCount) {
+    private void rotateRight() {
         Rotate rotate = new Rotate();
-        rotate.setPivotX(BaseNode.HEIGHT + 9 * BaseNode.WIDTH);
+        rotate.setPivotX(BaseNode.HEIGHT + cellCount * BaseNode.WIDTH);
         rotate.setPivotY(0);
         right.getTransforms().add(rotate);
         rotate.setAngle(270);
     }
 
-    private void rotateLeft(int cellCount) {
+    private void rotateLeft() {
         Rotate rotate = new Rotate();
         rotate.setPivotX(0);
         rotate.setPivotY(BaseNode.HEIGHT);
         left.getTransforms().add(rotate);
         rotate.setAngle(90);
 
+    }
+
+    @Override
+    public void rollDice(int[] numbers) {
+        die1.setNumber(numbers[0]);
+        die2.setNumber(numbers[1]);
+    }
+
+    @Override
+    public void receiveData(Object data) {
+        markers = (Map<Player, PlayerMarker>) data;
     }
 }

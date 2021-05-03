@@ -8,6 +8,5 @@
       alignment="CENTER" fx:id="root" spacing="10">
     <ImageView fx:id="img"/>
     <Button styleClass="btn" onAction="#onPlayBtnClick" text="Play"/>
-    <Button styleClass="btn" onAction="#onAboutBtnClick" text="About"/>
     <Button styleClass="btn" onAction="#onExitBtnClick" text="Exit"/>
 </VBox>
