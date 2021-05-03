@@ -28,7 +28,7 @@ public class HomeController extends BaseController implements Initializable {
 
     @FXML
     private void onPlayBtnClick() {
-        sceneManager.changeScene(SceneTag.GAME);
+        sceneManager.changeScene(SceneTag.REGISTER);
     }
 
     @FXML

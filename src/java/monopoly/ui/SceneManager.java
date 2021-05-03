@@ -18,13 +18,17 @@ public class SceneManager {
         this.stage = stage;
     }
 
+    public final Stage getStage() {return stage;}
+
     public void changeScene(SceneTag sceneTag) {
         changeScene(sceneTag, null);
     }
 
     public void changeScene(SceneTag scene, Object data) {
+        stage.setMinWidth(scene.getMinWidth());
+        stage.setMinWidth(scene.getMinHeight());
         FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(FXUtils.getFXML(scene.fxml));
+        fxmlLoader.setLocation(FXUtils.getFXML(scene.getFxml()));
 
         Region r = null;
         try {

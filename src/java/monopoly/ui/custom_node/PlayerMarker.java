@@ -15,10 +15,10 @@ public class PlayerMarker extends Circle {
     }
 
     public enum Color {
-        BLUE(""),
-        RED(""),
-        YELLOW(""),
-        GREEN("");
+        BLUE("#0f52ba"),
+        RED("#ed2939"),
+        YELLOW("#fce205"),
+        GREEN("#2e8b57");
         private final String hexColor;
 
         Color(String hexColor) {

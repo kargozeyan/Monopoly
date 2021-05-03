@@ -1,7 +1,9 @@
 package monopoly.ui;
 
 import javafx.application.Application;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
+import monopoly.ui.custom_node.BaseNode;
 import monopoly.utils.FXUtils;
 
 public class App extends Application {
@@ -13,13 +15,10 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) {
-
         sceneManager = new SceneManager(stage);
-        sceneManager.changeScene(SceneTag.GAME);
-
+        sceneManager.changeScene(SceneTag.REGISTER);
         stage.getIcons().add(FXUtils.getImage("icon.png"));
-        stage.setMinWidth(1600);
-        stage.setMinHeight(900);
+
         stage.show();
     }
 }

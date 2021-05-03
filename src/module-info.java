@@ -7,4 +7,5 @@ module Monopoly {
     opens monopoly.ui.scene_controllers;
     opens monopoly.ui;
     opens monopoly.ui.scene_controllers.game;
+    opens monopoly.ui.scene_controllers.register;
 }
