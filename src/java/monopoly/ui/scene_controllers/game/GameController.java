@@ -2,6 +2,7 @@ package monopoly.ui.scene_controllers.game;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
@@ -20,11 +21,12 @@ import monopoly.ui.scene_controllers.DataReceiver;
 import monopoly.utils.FXUtils;
 
 import java.net.URL;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public class GameController extends BaseController implements Initializable, DataReceiver,GameGUI {
+public class GameController extends BaseController implements Initializable, DataReceiver, GameUI {
     @FXML
     Pane root;
 
@@ -36,16 +38,24 @@ public class GameController extends BaseController implements Initializable, Dat
 
     // dice
     private Die die1, die2;
+    // logo
+    private ImageView logo;
 
     // markers
-    private Map<Player, PlayerMarker> markers;
+    private Map<Player, PlayerMarker> markers = new HashMap<>();
 
     private final Game game = new Game(this);
     private int cellCount; // the number of cells in one hbox, excluding corners
+    private double boxLength;
+    Player p1 = new Player("A1");
+    Player p2 = new Player("A2");
+    Player p3 = new Player("A3");
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // adding CSS
+        // adding CSS and font
         root.getStylesheets().add(FXUtils.getCSS("board.css"));
+//        root.getStylesheets().add("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
         // initializing board
         initBoard();
@@ -55,12 +65,56 @@ public class GameController extends BaseController implements Initializable, Dat
         // init logo and dice
         initLogo();
         initDice();
+
+        markers.put(p1, new PlayerMarker(PlayerMarker.Color.BLUE));
+        markers.put(p2, new PlayerMarker(PlayerMarker.Color.GREEN));
+        markers.put(p3, new PlayerMarker(PlayerMarker.Color.YELLOW));
+
+        initStartBtn();
+
+        Button test = new Button("test");
+        test.setLayoutX(300);
+        test.setLayoutY(300);
+
+        test.setOnAction(actionEvent -> {
+
+        });
+        root.getChildren().add(test);
+    }
+
+    private void initStartBtn() {
+        Button button = new Button("Start");
+        button.setPrefWidth(BaseNode.WIDTH);
+        button.setPrefHeight(BaseNode.WIDTH / 4);
+        button.getStyleClass().add("btn");
+        button.setLayoutX(BaseNode.HEIGHT + cellCount / 2 * BaseNode.WIDTH);
+        button.setLayoutY(logo.getLayoutY() + 164);
+        button.setOnAction(actionEvent -> {
+            addPlayers();
+            button.setVisible(false);
+        });
+        root.getChildren().add(button);
+    }
+
+    private void addPlayers() {
+        int i = 0;
+        double[] startPoint = getCoordinatesByIndex(0);
+
+        for (Map.Entry<Player, PlayerMarker> entry : markers.entrySet()) {
+            entry.getValue().setPosition(i, startPoint[0], startPoint[1]);
+            root.getChildren().add(entry.getValue());
+            i++;
+            game.addPlayer(entry.getKey());
+        }
+
+        game.start();
+
     }
 
     private void initBoard() {
         Cell[] cells = game.getCells();
         cellCount = cells.length / 4 - 1;
-
+        boxLength = cellCount * BaseNode.WIDTH + BaseNode.HEIGHT;
         int bottomStart = 0;
         int leftStart = cells.length / 4;
         int topStart = 2 * cells.length / 4;
@@ -80,7 +134,7 @@ public class GameController extends BaseController implements Initializable, Dat
             addToBox(rightCell, right, dark);
         }
 
-        bottom.setLayoutY(BaseNode.HEIGHT + BaseNode.WIDTH * cellCount);
+        bottom.setLayoutY(boxLength);
         bottom.setLayoutX(BaseNode.HEIGHT);
 
         root.getChildren().addAll(top, bottom, left, right);
@@ -89,7 +143,7 @@ public class GameController extends BaseController implements Initializable, Dat
     private void initLogo() {
         int margin = 48;
 
-        ImageView logo = new ImageView(FXUtils.getImage("monopoly.png"));
+        logo = new ImageView(FXUtils.getImage("monopoly.png"));
         logo.setLayoutX(BaseNode.HEIGHT + margin);
         logo.setLayoutY(BaseNode.HEIGHT + (cellCount / 2) * BaseNode.WIDTH);
         logo.setFitWidth(BaseNode.WIDTH * cellCount - margin * 2);
@@ -104,10 +158,8 @@ public class GameController extends BaseController implements Initializable, Dat
         die2 = new Die(false);
         die1.setLayoutX(BaseNode.HEIGHT + margin);
         die2.setLayoutX(die1.getLayoutX() + margin + die1.getWidth());
-        die1.setLayoutY(BaseNode.HEIGHT + 8.5 * BaseNode.WIDTH - margin);
+        die1.setLayoutY(boxLength - 0.5 * BaseNode.WIDTH - margin);
         die2.setLayoutY(die1.getLayoutY());
-        die1.setNumber(2);
-        die2.setNumber(2);
         root.getChildren().addAll(die1, die2);
     }
 
@@ -162,7 +214,7 @@ public class GameController extends BaseController implements Initializable, Dat
 
     private void rotateTop() {
         Rotate rotate = new Rotate();
-        rotate.setPivotX((BaseNode.HEIGHT + cellCount * BaseNode.WIDTH) / 2);
+        rotate.setPivotX((boxLength) / 2);
         rotate.setPivotY(BaseNode.HEIGHT / 2);
         top.getTransforms().add(rotate);
         rotate.setAngle(180);
@@ -170,7 +222,7 @@ public class GameController extends BaseController implements Initializable, Dat
 
     private void rotateRight() {
         Rotate rotate = new Rotate();
-        rotate.setPivotX(BaseNode.HEIGHT + cellCount * BaseNode.WIDTH);
+        rotate.setPivotX(boxLength);
         rotate.setPivotY(0);
         right.getTransforms().add(rotate);
         rotate.setAngle(270);
@@ -182,7 +234,23 @@ public class GameController extends BaseController implements Initializable, Dat
         rotate.setPivotY(BaseNode.HEIGHT);
         left.getTransforms().add(rotate);
         rotate.setAngle(90);
+    }
 
+    private double[] getCoordinatesByIndex(int i) {
+        i %= 40;
+        Node node;
+        if (i <= cellCount) {
+            node = bottom.getChildren().get(cellCount - i);
+        } else if (i < (cellCount + 1) * 2) {
+            node = left.getChildren().get((cellCount + 1) * 2 -1 - i);
+        } else if (i < (cellCount + 1) * 3) {
+            node = top.getChildren().get((cellCount + 1) * 3 - 1 - i);
+        } else {
+            node = right.getChildren().get((cellCount + 1) * 4 - 1 - i);
+        }
+
+        Bounds bounds = node.localToScene(node.getBoundsInLocal());
+        return new double[]{bounds.getCenterX(), bounds.getCenterY()};
     }
 
     @Override
@@ -193,6 +261,6 @@ public class GameController extends BaseController implements Initializable, Dat
 
     @Override
     public void receiveData(Object data) {
-        markers = (Map<Player, PlayerMarker>) data;
+        markers.putAll((Map<Player, PlayerMarker>) data);
     }
 }

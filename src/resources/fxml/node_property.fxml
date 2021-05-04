@@ -11,6 +11,6 @@
     <VBox style="-fx-min-height:124;-fx-alignment: center; ">
         <Text styleClass="location_title" fx:id="name" textAlignment="CENTER" wrappingWidth="80"
               text="THE NAME OF LOCATION"/>
-        <Text styleClass="location_price" fx:id="price" textAlignment="CENTER" wrappingWidth="80" text="200$"/>
+        <Text styleClass="location_price" fx:id="price" textAlignment="CENTER" wrappingWidth="80"/>
     </VBox>
 </fx:root>

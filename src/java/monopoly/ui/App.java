@@ -16,7 +16,7 @@ public class App extends Application {
     @Override
     public void start(Stage stage) {
         sceneManager = new SceneManager(stage);
-        sceneManager.changeScene(SceneTag.REGISTER);
+        sceneManager.changeScene(SceneTag.GAME);
         stage.getIcons().add(FXUtils.getImage("icon.png"));
 
         stage.show();

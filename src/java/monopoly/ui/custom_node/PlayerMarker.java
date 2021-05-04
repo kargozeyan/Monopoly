@@ -1,17 +1,37 @@
 package monopoly.ui.custom_node;
 
-import javafx.scene.paint.Color;
+import javafx.animation.TranslateTransition;
+import javafx.geometry.Bounds;
 import javafx.scene.shape.Circle;
+import javafx.util.Duration;
+
+import java.util.Arrays;
 
 public class PlayerMarker extends Circle {
-    private static final int RADIUS = 24;
+    public static final int RADIUS = 12;
+    private final TranslateTransition transition = new TranslateTransition(Duration.seconds(.5), this);
+    private double marginX;
+    private double marginY;
+
+    private double x, y;
 
     public PlayerMarker(Color color) {
         super(RADIUS, javafx.scene.paint.Color.valueOf(color.getHexColor()));
     }
 
-    public void moveTo(double x, double y) {
+    public void setPosition(int pos, double x, double y) {
+        marginX = pos % 2 == 0 ? -8 - RADIUS : 8 + RADIUS;
+        marginY = pos >= 2 ? -8 - RADIUS : 8 + RADIUS;
+        this.x = (x + marginX);
+        this.y = (y + marginY);
 
+        setLayoutX(this.x);
+        setLayoutY(this.y);
+    }
+
+    public void moveTo(double[] p) {
+        setLayoutX(p[0] + marginX);
+        setLayoutY(p[1] + marginY);
     }
 
     public enum Color {

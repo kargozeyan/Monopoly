@@ -120,7 +120,6 @@ public class PlayerRegisterController extends BaseController implements Initiali
         resultOptional.ifPresent(dialogResult -> {
             // updating map in any case
             markers.put(dialogResult.getPlayer(), new PlayerMarker(dialogResult.getColor()));
-            if (markers.size() >= 2) startButton.setDisable(false);
             // if is edit mode, then just update data and return
             if (isEditMode) {
                 registeredPlayerItem.updateData(dialogResult);
@@ -141,9 +140,9 @@ public class PlayerRegisterController extends BaseController implements Initiali
                 // setting visibility true in case it can be false
                 addButton.setDisable(false);
 
-                if (markers.size() < 2) startButton.setDisable(true);
+                startButton.setDisable(markers.size() < 2);
             });
-
+            startButton.setDisable(markers.size() < 2);
             // display the view
             players.getChildren().add(playerItem);
         });

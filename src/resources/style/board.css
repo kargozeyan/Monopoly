@@ -1,9 +1,28 @@
 .location_title {
-    -fx-font-family: Montserrat;
-    -fx-font-weight: 600
+    -fx-font-family: 'Montserrat', sans-serif;
 }
 
 .location_price {
+    -fx-font-family: 'Montserrat', sans-serif;
     -fx-font-weight: bold;
-    -fx-font-family: Montserrat
+}
+
+.btn {
+    -fx-pref-width: 96;
+    -fx-pref-height: 16;
+    -fx-font-size: 16;
+    -fx-text-fill: #e30713;
+    -fx-border-width: 2;
+    -fx-border-color: #e30713;
+    -fx-background-color: transparent;
+    -fx-border-radius: 4;
+}
+
+.btn:hover {
+    -fx-pref-width: 96;
+    -fx-pref-height: 16;
+    -fx-font-size: 16;
+    -fx-text-fill: white;
+    -fx-background-color: #e30713;
+    -fx-border-radius: 4;
 }
