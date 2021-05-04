@@ -16,9 +16,4 @@ public class CC_Cell extends Cell {
     private CC_Cell(String name) {
         super(name);
     }
-
-    @Override
-    public void onLand(Player player) {
-        // TODO player.takeChanceCard()
-    }
 }

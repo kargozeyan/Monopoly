@@ -13,11 +13,4 @@ public abstract class Cell {
     public String getName() {
         return name;
     }
-
-    /**
-     * this method is invoked when a player lands on a cell
-     *
-     * @param player the player that landed on cell
-     */
-    public abstract void onLand(Player player);
 }

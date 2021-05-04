@@ -10,11 +10,6 @@ public class Tax extends Cell {
         this.tax = tax;
     }
 
-    @Override
-    public void onLand(Player player) {
-        // TODO player.payMoney(tax)
-    }
-
     public int getTax() {
         return tax;
     }
