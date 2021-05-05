@@ -95,7 +95,7 @@ public class GameController extends BaseController implements Initializable, Dat
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // adding CSS and font
         root.getStylesheets().add(FXUtils.getCSS("board.css"));
-        root.getStylesheets().add("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+        root.getStylesheets().add("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@300;0,400;0,500;0,600&display=swap");
 
         // initializing board
         initBoard();
@@ -155,12 +155,14 @@ public class GameController extends BaseController implements Initializable, Dat
             button.setVisible(false);
             buttons.setVisible(true);
             playersBalance.setVisible(true);
+            detailedNode.setVisible(true);
             updatePlayerBalances();
         });
         root.getChildren().add(button);
     }
 
     private void initDetailNode() {
+        detailedNode.setVisible(false);
         detailedNode.setLayoutX(boxLength - DetailedNode.WIDTH - 32);
         detailedNode.setLayoutY(boxLength - DetailedNode.HEIGHT - 32);
         detailedNode.setData(game.getCells()[1]);
@@ -336,6 +338,10 @@ public class GameController extends BaseController implements Initializable, Dat
     }
 
     private void updateButtonStates() {
+        updateButtonStates(false);
+    }
+
+    private void updateButtonStates(boolean isRentPaid) {
         if (markers.get(current) == null) {
             rollBtn.setDisable(true);
             buyBtn.setDisable(true);
@@ -351,7 +357,11 @@ public class GameController extends BaseController implements Initializable, Dat
             sellBtn.setDisable(((PricedCell) cell).getOwner() != current);
             upgradeBtn.setDisable(true);
 
-            payBtn.setDisable(!((PricedCell) cell).hasOwner() || ((PricedCell) cell).getOwner() == current);
+            if (!isRentPaid) {
+                payBtn.setDisable(!((PricedCell) cell).hasOwner() || ((PricedCell) cell).getOwner() == current);
+            } else {
+                payBtn.setDisable(true);
+            }
             if (cell instanceof Property) {
                 if (((Property) cell).hasOwner())
                     upgradeBtn.setDisable(!current.canUpgrade((Property) cell));
@@ -430,7 +440,7 @@ public class GameController extends BaseController implements Initializable, Dat
     private void onPayClick() {
         current.payRentFor((PricedCell) game.getBoard().getCells()[current.getPosition()]);
         payBtn.setDisable(true);
-        updateButtonStates();
+        updateButtonStates(true);
     }
 
     @Override

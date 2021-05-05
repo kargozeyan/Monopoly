@@ -137,9 +137,6 @@ public class PlayerRegisterController extends BaseController implements Initiali
                 // on remove click, remove the specific item from map, availableColors, and view
                 markers.remove(dialogResult.getPlayer());
                 availableColors.add(dialogResult.getColor());
-                Set<PlayerMarker.Color> availableColorSet = new HashSet<>(availableColors);
-                availableColors.clear();
-                availableColors.addAll(availableColorSet);
                 players.getChildren().remove(playerItem);
 
                 // setting visibility true in case it can be false

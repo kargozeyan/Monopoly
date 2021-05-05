@@ -10,7 +10,7 @@ public class Dice {
     public int[] roll() {
         int first = random.nextInt(SIDE_NUMBER) + 1;
         int second = random.nextInt(SIDE_NUMBER) + 1;
-        lastRoll = new int[]{first, second};
+        lastRoll = new int[]{2, 3};
         return getLastRoll();
     }
 
