@@ -6,7 +6,7 @@ import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import monopoly.ui.scene_controllers.BaseController;
 import monopoly.ui.scene_controllers.DataReceiver;
-import monopoly.utils.FXUtils;
+import monopoly.ui.utils.FXUtils;
 
 import java.io.IOException;
 

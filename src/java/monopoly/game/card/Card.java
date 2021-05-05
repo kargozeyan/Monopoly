@@ -3,8 +3,8 @@ package monopoly.game.card;
 import monopoly.game.Player;
 
 public class Card {
-    String message;
-    CardAction cardAction;
+    private final String message;
+    private final CardAction cardAction;
 
     public Card(String message, CardAction cardAction) {
         this.message = message;
@@ -13,5 +13,9 @@ public class Card {
 
     public void open(Player player) {
         cardAction.act(player);
+    }
+
+    public String getMessage() {
+        return message;
     }
 }

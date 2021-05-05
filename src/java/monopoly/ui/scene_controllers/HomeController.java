@@ -5,9 +5,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import monopoly.ui.SceneTag;
-import monopoly.utils.FXUtils;
+import monopoly.ui.utils.FXUtils;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 

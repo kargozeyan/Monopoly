@@ -1,16 +1,20 @@
 package monopoly.ui.scene_controllers.game;
 
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import monopoly.game.Game;
 import monopoly.game.Player;
@@ -18,17 +22,47 @@ import monopoly.game.board.cell.*;
 import monopoly.ui.custom_node.*;
 import monopoly.ui.scene_controllers.BaseController;
 import monopoly.ui.scene_controllers.DataReceiver;
-import monopoly.utils.FXUtils;
+import monopoly.ui.utils.FXUtils;
+import monopoly.util.Function;
 
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class GameController extends BaseController implements Initializable, DataReceiver, GameUI {
     @FXML
     Pane root;
+
+    @FXML
+    Button rollBtn;
+
+    @FXML
+    Button sellBtn;
+
+    @FXML
+    Button buyBtn;
+
+    @FXML
+    Button tradeBtn;
+
+    @FXML
+    Button doneBtn;
+
+    @FXML
+    VBox buttons;
+
+    @FXML
+    Text info;
+
+    @FXML
+    Button upgradeBtn;
+
+    @FXML
+    Button payBtn;
+
+    @FXML
+    Text playersBalance;
 
     // Parts of board
     private final HBox left = new HBox();
@@ -47,15 +81,22 @@ public class GameController extends BaseController implements Initializable, Dat
     private final Game game = new Game(this);
     private int cellCount; // the number of cells in one hbox, excluding corners
     private double boxLength;
+
+    private Player current;
+
     Player p1 = new Player("A1");
     Player p2 = new Player("A2");
     Player p3 = new Player("A3");
+
+    private DetailedNode detailedNode = new DetailedNode();
+
+    private DialogHelper dialogHelper = new DialogHelper();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // adding CSS and font
         root.getStylesheets().add(FXUtils.getCSS("board.css"));
-//        root.getStylesheets().add("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+        root.getStylesheets().add("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
         // initializing board
         initBoard();
@@ -70,16 +111,42 @@ public class GameController extends BaseController implements Initializable, Dat
         markers.put(p2, new PlayerMarker(PlayerMarker.Color.GREEN));
         markers.put(p3, new PlayerMarker(PlayerMarker.Color.YELLOW));
 
+        // init starting button
         initStartBtn();
 
-        Button test = new Button("test");
-        test.setLayoutX(300);
-        test.setLayoutY(300);
+        // place player buttons
+        placeButtons();
 
-        test.setOnAction(actionEvent -> {
+        // init Detail Node
+        initDetailNode();
 
+        // init players balance
+        initPlayersBalance();
+
+        Button button = new Button("T");
+        button.setLayoutX(300);
+        button.setLayoutY(300);
+
+        button.setOnAction(actionEvent -> {
+            p1.goToJail();
         });
-        root.getChildren().add(test);
+
+        root.getChildren().add(button);
+    }
+
+    private void initPlayersBalance() {
+        playersBalance.setLayoutX(boxLength + 196);
+        playersBalance.setLayoutY(196);
+        updatePlayerBalances();
+    }
+
+    @Override
+    public void updatePlayerBalances() {
+        StringBuilder balances = new StringBuilder();
+        markers.keySet().forEach(player -> {
+            balances.append(String.format("%s: %d\n", player.getName(), player.getBalance()));
+        });
+        playersBalance.setText(balances.toString());
     }
 
     private void initStartBtn() {
@@ -92,8 +159,17 @@ public class GameController extends BaseController implements Initializable, Dat
         button.setOnAction(actionEvent -> {
             addPlayers();
             button.setVisible(false);
+            buttons.setVisible(true);
+            playersBalance.setVisible(true);
         });
         root.getChildren().add(button);
+    }
+
+    private void initDetailNode() {
+        detailedNode.setLayoutX(boxLength - DetailedNode.WIDTH - 32);
+        detailedNode.setLayoutY(boxLength - DetailedNode.HEIGHT - 32);
+        detailedNode.setData(game.getCells()[1]);
+        root.getChildren().add(detailedNode);
     }
 
     private void addPlayers() {
@@ -177,38 +253,32 @@ public class GameController extends BaseController implements Initializable, Dat
             node = new CCNode((CC_Cell) cell);
         } else if (cell instanceof CornerCell) {
             node = new Rectangle(BaseNode.HEIGHT, BaseNode.HEIGHT, Color.GRAY);
-            String name = cell.getName();
             String image;
-            if (name.equalsIgnoreCase("go")) {
+            if (cell == CornerCell.GO) {
                 image = "go.png";
-            } else if (name.equalsIgnoreCase("go to jail")) {
+            } else if (cell == CornerCell.GO_JAIL) {
                 image = "go_to_jail.png";
-            } else if (name.equals("Free Parking")) {
+            } else if (cell == CornerCell.FREE_PARKING) {
                 image = "free_parking.png";
             } else {
                 image = "jail.png";
             }
             ((Rectangle) node).setFill(new ImagePattern(FXUtils.getImage(image)));
         } else {
-            OtherNode other = null;
-            if (cell instanceof Tax) {
-                other = new OtherNode(cell.getName(), ((Tax) cell).getTax());
-                other.setImg("tax_" + ((Tax) cell).getTax() + ".png");
-            } else if (cell instanceof Utility) {
-                other = new OtherNode(cell.getName(), ((Utility) cell).getPrice());
-                String imageName = cell.getName().equals(Utility.NAME_ELECTRICITY) ? "bulb.png" : "water.png";
-                other.setImg(imageName);
-            } else if (cell instanceof Station) {
-                other = new OtherNode(cell.getName(), ((Station) cell).getPrice());
-                other.setImg("train.png");
-            }
-            node = other;
+            node = new OtherNode(cell);
         }
         if (dark) {
             node.setStyle("-fx-background-color: #ededed");
         } else {
             node.setStyle("-fx-background-color: #f6f6f6");
         }
+        node.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
+            if (mouseEvent.getSource() instanceof BaseNode) {
+                BaseNode n = (BaseNode) mouseEvent.getSource();
+
+                detailedNode.setData(n.getCell());
+            }
+        });
         box.getChildren().add(0, node);
     }
 
@@ -236,13 +306,18 @@ public class GameController extends BaseController implements Initializable, Dat
         rotate.setAngle(90);
     }
 
+    private void placeButtons() {
+        buttons.setLayoutX(boxLength + 196);
+        buttons.setLayoutY(boxLength);
+    }
+
     private double[] getCoordinatesByIndex(int i) {
         i %= 40;
         Node node;
         if (i <= cellCount) {
             node = bottom.getChildren().get(cellCount - i);
         } else if (i < (cellCount + 1) * 2) {
-            node = left.getChildren().get((cellCount + 1) * 2 -1 - i);
+            node = left.getChildren().get((cellCount + 1) * 2 - 1 - i);
         } else if (i < (cellCount + 1) * 3) {
             node = top.getChildren().get((cellCount + 1) * 3 - 1 - i);
         } else {
@@ -254,13 +329,115 @@ public class GameController extends BaseController implements Initializable, Dat
     }
 
     @Override
-    public void rollDice(int[] numbers) {
+    public void showDiceAndMove(Function onOver, int[] numbers) {
         die1.setNumber(numbers[0]);
-        die2.setNumber(numbers[1]);
+        die2.setNumber(numbers[1], () -> {
+            markers.get(current).moveTo(getCoordinatesByIndex(current.getPosition()));
+            onOver.invoke();
+            rollBtn.setDisable(!current.isRollingAgain());
+            detailedNode.setData(game.getCells()[current.getPosition()]);
+            updateButtonStates();
+        });
+    }
+
+    private void updateButtonStates() {
+        Cell cell = game.getBoard().getCells()[current.getPosition()];
+        if (cell instanceof PricedCell) {
+            buyBtn.setDisable(((PricedCell) cell).hasOwner());
+            sellBtn.setDisable(((PricedCell) cell).getOwner() != current);
+            upgradeBtn.setDisable(true);
+
+            payBtn.setDisable(!((PricedCell) cell).hasOwner() || ((PricedCell) cell).getOwner() == current);
+            if (cell instanceof Property) {
+                if (((Property) cell).hasOwner())
+                    upgradeBtn.setDisable(!current.canUpgrade((Property) cell));
+            }
+
+            doneBtn.setDisable(!(rollBtn.isDisable() && payBtn.isDisable()));
+        } else {
+            doneBtn.setDisable(false);
+        }
     }
 
     @Override
     public void receiveData(Object data) {
         markers.putAll((Map<Player, PlayerMarker>) data);
+    }
+
+    @Override
+    public void initCurrentPlayer(Player player) {
+        current = player;
+
+        info.setText(String.format("%s's turn", player.getName()));
+        rollBtn.setDisable(false);
+        buyBtn.setDisable(true);
+        sellBtn.setDisable(true);
+        tradeBtn.setDisable(true);
+        doneBtn.setDisable(true);
+        upgradeBtn.setDisable(true);
+        payBtn.setDisable(true);
+    }
+
+    @Override
+    public void removePlayer(Player player) {
+        root.getChildren().remove(markers.get(player));
+        markers.remove(player);
+    }
+
+    @FXML
+    private void onRollClick() {
+        current.rollDice();
+        rollBtn.setDisable(true);
+    }
+
+    @FXML
+    private void onBuyClick() {
+        current.buy((PricedCell) game.getBoard().getCells()[current.getPosition()]);
+        updateButtonStates();
+    }
+
+    @FXML
+    private void onSellClick() {
+        current.sell((PricedCell) game.getBoard().getCells()[current.getPosition()]);
+        updateButtonStates();
+    }
+
+    @FXML
+    private void onTradeClick() {
+
+    }
+
+    @FXML
+    private void onDoneClick() {
+        game.nextPlayer();
+    }
+
+    @FXML
+    private void onUpgradeClick() {
+        current.upgradeProperty((Property) game.getBoard().getCells()[current.getPosition()]);
+        updateButtonStates();
+    }
+
+    @FXML
+    private void onPayClick() {
+        current.payRentFor((PricedCell) game.getBoard().getCells()[current.getPosition()]);
+        payBtn.setDisable(true);
+        updateButtonStates();
+    }
+
+    @Override
+    public void showMessage(String message) {
+        dialogHelper.displayMessage(message);
+    }
+
+    @Override
+    public boolean askForApprove(String message) {
+        return dialogHelper.askForApproval(message);
+    }
+
+    @Override
+    public void movePlayer(Player player) {
+        markers.get(player).moveTo(getCoordinatesByIndex(player.getPosition()));
+        updateButtonStates();
     }
 }

@@ -1,10 +1,8 @@
 package monopoly.ui;
 
 import javafx.application.Application;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
-import monopoly.ui.custom_node.BaseNode;
-import monopoly.utils.FXUtils;
+import monopoly.ui.utils.FXUtils;
 
 public class App extends Application {
     private SceneManager sceneManager;

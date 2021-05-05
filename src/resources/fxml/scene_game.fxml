@@ -1,9 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.layout.VBox?>
 <Pane xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="monopoly.ui.scene_controllers.game.GameController"
       fx:id="root">
-
+    <Text fx:id="playersBalance" styleClass="board_info" visible="false"/>
+    <VBox spacing="12" visible="false" alignment="CENTER" fx:id="buttons">
+        <Text fx:id="info" styleClass="board_info" textAlignment="CENTER"/>
+        <HBox spacing="12">
+            <Button fx:id="rollBtn" onAction="#onRollClick" styleClass="btn" text="Roll"/>
+            <Button fx:id="buyBtn" onAction="#onBuyClick" styleClass="btn" text="Buy"/>
+            <Button fx:id="sellBtn" onAction="#onSellClick" styleClass="btn" text="Sell"/>
+            <Button fx:id="tradeBtn" onAction="#onTradeClick" styleClass="btn" text="Trade"/>
+            <Button fx:id="doneBtn" onAction="#onDoneClick" styleClass="btn" text="Done"/>
+        </HBox>
+        <HBox spacing="12">
+            <Button fx:id="upgradeBtn" onAction="#onUpgradeClick" styleClass="btn" text="Upgrade" minWidth="120"/>
+            <Button fx:id="payBtn" onAction="#onPayClick" styleClass="btn" text="Pay Rent" minWidth="120" />
+        </HBox>
+    </VBox>
 </Pane>

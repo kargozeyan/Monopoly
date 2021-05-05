@@ -26,4 +26,11 @@ abstract public class PricedCell extends Cell {
     public int getPrice() {
         return price;
     }
+
+    public boolean hasOwner() {
+        return owner != null;
+    }
+
+    public abstract String getData();
+    public abstract int getRent();
 }

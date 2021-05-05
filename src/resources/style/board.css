@@ -16,6 +16,8 @@
     -fx-border-color: #e30713;
     -fx-background-color: transparent;
     -fx-border-radius: 4;
+    -fx-font: 'Montserrat', sans-serif;
+    -fx-font-weight: bold;
 }
 
 .btn:hover {
@@ -25,4 +27,9 @@
     -fx-text-fill: white;
     -fx-background-color: #e30713;
     -fx-border-radius: 4;
+}
+
+.board_info {
+    -fx-font: 'Montserrat', sans-serif;
+    -fx-font-size: 36;
 }

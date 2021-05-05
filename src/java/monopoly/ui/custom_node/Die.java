@@ -4,6 +4,7 @@ import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import monopoly.util.Function;
 
 public class Die extends Canvas {
     private static final String RED = "#cb0512";
@@ -58,14 +59,25 @@ public class Die extends Canvas {
         });
     }
 
+    public void setNumber(int number, Function onOver) {
+        animation.start(() -> {
+            drawBackground();
+            drawDots(number);
+            onOver.invoke();
+        });
+    }
+    public void animate() {
+        animation.start();
+    }
+
     private class DieAnimation extends AnimationTimer {
 
         private static final int REPETITONS = 60;
-        private OnAnimationEnd onAnimationEnd = () -> {};
+        private Function onAnimationEnd = () -> {};
         private int counter = 0;
 
 
-        public void start(OnAnimationEnd onAnimationEnd) {
+        public void start(Function onAnimationEnd) {
             this.onAnimationEnd = onAnimationEnd;
             super.start();
         }
@@ -77,14 +89,10 @@ public class Die extends Canvas {
             counter++;
             if (counter >= 60) {
                 counter = 0;
-                onAnimationEnd.onAnimationEnd();
+                onAnimationEnd.invoke();
                 stop();
             }
         }
 
-    }
-
-    private interface OnAnimationEnd {
-        void onAnimationEnd();
     }
 }

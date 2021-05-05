@@ -1,4 +1,4 @@
-package monopoly.utils;
+package monopoly.ui.utils;
 
 import javafx.scene.Node;
 import javafx.scene.Parent;

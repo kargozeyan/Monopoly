@@ -8,6 +8,6 @@
          alignment="CENTER"
          prefHeight="164" prefWidth="96" spacing="5">
     <ImageView fx:id="img"/>
-    <Text fx:id="name" wrappingWidth="80" textAlignment="CENTER"/>
-    <Text fx:id="price" />
+    <Text fx:id="name" wrappingWidth="80" styleClass="location_title" textAlignment="CENTER"/>
+    <Text fx:id="price" styleClass="location_price"/>
 </fx:root>

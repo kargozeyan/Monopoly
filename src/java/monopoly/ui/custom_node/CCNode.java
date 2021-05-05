@@ -1,14 +1,10 @@
 package monopoly.ui.custom_node;
 
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 import monopoly.game.board.cell.CC_Cell;
-import monopoly.utils.FXUtils;
-
-import java.net.URL;
-import java.util.ResourceBundle;
+import monopoly.ui.utils.FXUtils;
 
 // CC stands for Chance/Chest
 public class CCNode extends BaseNode {
@@ -19,13 +15,13 @@ public class CCNode extends BaseNode {
     private Text type;
 
     public CCNode(CC_Cell cell) {
-        super("node_cc.fxml");
+        super("node_cc.fxml", cell);
 
         setType(cell.getName());
 
-        if (cell.getName().equals(CC_Cell.NAME_CHANCE)) {
+        if (cell == CC_Cell.CHANCE) {
             setImg("chance.png");
-        } else if (cell.getName().equals(CC_Cell.NAME_CHEST)) { ;
+        } else if (cell == CC_Cell.CHEST) { ;
             setImg("community_chest.png");
         }
     }

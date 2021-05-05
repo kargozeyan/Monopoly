@@ -13,4 +13,8 @@ public class Tax extends Cell {
     public int getTax() {
         return tax;
     }
+
+    public String getDesc() {
+        return String.format("One of the least-liked spaces on the board because you have to pay %d$ when you land here", tax);
+    }
 }

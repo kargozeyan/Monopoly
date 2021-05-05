@@ -17,12 +17,8 @@ public class PropertyNode extends BaseNode {
     @FXML
     private Rectangle colorGroup;
 
-    public PropertyNode() {
-        super("node_property.fxml");
-    }
-
     public PropertyNode(Property property) {
-        this();
+        super("node_property.fxml", property);
         setName(property.getName());
         setPrice(property.getPrice());
         colorGroup.setFill(Color.valueOf(property.getColorGroup().getHexColor()));
