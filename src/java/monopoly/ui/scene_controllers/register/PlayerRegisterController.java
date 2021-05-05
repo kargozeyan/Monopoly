@@ -118,13 +118,15 @@ public class PlayerRegisterController extends BaseController implements Initiali
         // if the data is not null then adding them to map
         Optional<DialogResult> resultOptional = dialog.showAndWait();
         resultOptional.ifPresent(dialogResult -> {
-            // updating map in any case
-            markers.put(dialogResult.getPlayer(), new PlayerMarker(dialogResult.getColor()));
-            // if is edit mode, then just update data and return
+
             if (isEditMode) {
+                markers.put(registeredPlayerItem.getData().getPlayer(), new PlayerMarker(dialogResult.getColor()));
                 registeredPlayerItem.updateData(dialogResult);
                 return;
             }
+
+            markers.put(dialogResult.getPlayer(), new PlayerMarker(dialogResult.getColor()));
+
             // otherwise create new item
             RegisteredPlayerItem playerItem = new RegisteredPlayerItem(dialogResult);
             playerItem.setOnEditClick(actionEvent -> {
@@ -135,6 +137,9 @@ public class PlayerRegisterController extends BaseController implements Initiali
                 // on remove click, remove the specific item from map, availableColors, and view
                 markers.remove(dialogResult.getPlayer());
                 availableColors.add(dialogResult.getColor());
+                Set<PlayerMarker.Color> availableColorSet = new HashSet<>(availableColors);
+                availableColors.clear();
+                availableColors.addAll(availableColorSet);
                 players.getChildren().remove(playerItem);
 
                 // setting visibility true in case it can be false

@@ -22,4 +22,6 @@ interface IGame {
     boolean askForApprove(String message);
 
     void movePlayer(Player player);
+
+    void announceWinner(Player player);
 }

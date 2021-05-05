@@ -3,6 +3,9 @@ package monopoly.game;
 import monopoly.game.board.cell.*;
 import monopoly.game.card.Card;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Player {
     private final String name;
 
@@ -64,11 +67,12 @@ public class Player {
 
     public void rollDice() {
         turnCounter++;
-        if (turnCounter == 3) {
-            goToJail();
-        }
-        int[] result = dice.roll();
 
+        int[] result = dice.roll();
+        if (turnCounter == 3 && result[0] == result[1]) {
+            goToJail();
+            return;
+        }
         position += result[0] + result[1];
 
         if (position >= game.getBoard().getCells().length) {
@@ -94,6 +98,7 @@ public class Player {
         position = game.getBoard().getJailIndex();
         isRollingAgain = false;
         skippingTurns = 3;
+        resetTurnCounter();
         game.movePlayer(this);
     }
 
@@ -223,7 +228,6 @@ public class Player {
 
     public void loseGame(Player to) {
         game.gameLost(this);
-
         for (Cell cell : game.getBoard().getCells()) {
             if (cell instanceof PricedCell && ((PricedCell) cell).getOwner() == this) {
                 ((PricedCell) cell).setOwner(to);
@@ -231,7 +235,24 @@ public class Player {
         }
     }
 
-    public void win() {
+    public List<PricedCell> getOwedCells() {
+        List<PricedCell> owedCells = new ArrayList<>();
 
+        for (Cell cell: game.getBoard().getCells()) {
+            if (cell instanceof PricedCell && ((PricedCell) cell).getOwner() == this) {
+                owedCells.add((PricedCell) cell);
+            }
+        }
+
+        return owedCells;
+    }
+
+    public void win() {
+        game.announceWinner(this);
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

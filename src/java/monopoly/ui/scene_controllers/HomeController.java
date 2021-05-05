@@ -19,10 +19,7 @@ public class HomeController extends BaseController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        root.getStylesheets().add(FXUtils.getCSS("home.css"));
-        img.setFitWidth(1272);
-        img.setPreserveRatio(true);
-        img.setImage(FXUtils.getImage("monopoly.png"));
+
     }
 
     @FXML

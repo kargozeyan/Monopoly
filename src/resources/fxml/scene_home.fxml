@@ -5,8 +5,7 @@
 <?import javafx.scene.layout.VBox?>
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
       fx:controller="monopoly.ui.scene_controllers.HomeController"
-      alignment="CENTER" fx:id="root" spacing="10">
-    <ImageView fx:id="img"/>
-    <Button styleClass="btn" onAction="#onPlayBtnClick" text="Play"/>
-    <Button styleClass="btn" onAction="#onExitBtnClick" text="Exit"/>
+      alignment="CENTER" fx:id="root" spacing="40" prefWidth="400" prefHeight="600">
+    <Button onAction="#onPlayBtnClick" text="Play" prefWidth="200" prefHeight="72" style="-fx-font-size: 24"/>
+    <Button onAction="#onExitBtnClick" text="Exit" prefWidth="200" prefHeight="72" style="-fx-font-size: 24"/>
 </VBox>

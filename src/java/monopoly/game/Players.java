@@ -28,7 +28,6 @@ public class Players {
             currentTurn -= players.size();
         Player next = players.get(currentTurn);
         if (next.isSkipping()) {
-            System.out.println("is skipping");
             next.skip();
             next();
         }

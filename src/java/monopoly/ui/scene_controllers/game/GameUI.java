@@ -12,4 +12,6 @@ public interface GameUI {
 
     void showMessage(String message);
     boolean askForApprove(String message);
+
+    void announceWinner(Player player);
 }

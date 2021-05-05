@@ -6,6 +6,8 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -19,6 +21,7 @@ import javafx.scene.transform.Rotate;
 import monopoly.game.Game;
 import monopoly.game.Player;
 import monopoly.game.board.cell.*;
+import monopoly.ui.SceneTag;
 import monopoly.ui.custom_node.*;
 import monopoly.ui.scene_controllers.BaseController;
 import monopoly.ui.scene_controllers.DataReceiver;
@@ -84,10 +87,6 @@ public class GameController extends BaseController implements Initializable, Dat
 
     private Player current;
 
-    Player p1 = new Player("A1");
-    Player p2 = new Player("A2");
-    Player p3 = new Player("A3");
-
     private DetailedNode detailedNode = new DetailedNode();
 
     private DialogHelper dialogHelper = new DialogHelper();
@@ -107,10 +106,6 @@ public class GameController extends BaseController implements Initializable, Dat
         initLogo();
         initDice();
 
-        markers.put(p1, new PlayerMarker(PlayerMarker.Color.BLUE));
-        markers.put(p2, new PlayerMarker(PlayerMarker.Color.GREEN));
-        markers.put(p3, new PlayerMarker(PlayerMarker.Color.YELLOW));
-
         // init starting button
         initStartBtn();
 
@@ -123,15 +118,14 @@ public class GameController extends BaseController implements Initializable, Dat
         // init players balance
         initPlayersBalance();
 
-        Button button = new Button("T");
-        button.setLayoutX(300);
-        button.setLayoutY(300);
 
-        button.setOnAction(actionEvent -> {
-            p1.goToJail();
-        });
-
-        root.getChildren().add(button);
+//        Button test = new Button("button");
+//        test.setLayoutX(300);
+//        test.setLayoutY(300);
+//        test.setOnAction(actionEvent -> {
+//            current.loseGame(null);
+//        });
+//        root.getChildren().add(test);
     }
 
     private void initPlayersBalance() {
@@ -161,6 +155,7 @@ public class GameController extends BaseController implements Initializable, Dat
             button.setVisible(false);
             buttons.setVisible(true);
             playersBalance.setVisible(true);
+            updatePlayerBalances();
         });
         root.getChildren().add(button);
     }
@@ -341,6 +336,15 @@ public class GameController extends BaseController implements Initializable, Dat
     }
 
     private void updateButtonStates() {
+        if (markers.get(current) == null) {
+            rollBtn.setDisable(true);
+            buyBtn.setDisable(true);
+            sellBtn.setDisable(true);
+            upgradeBtn.setDisable(true);
+            tradeBtn.setDisable(true);
+            payBtn.setDisable(true);
+            doneBtn.setDisable(false);
+        }
         Cell cell = game.getBoard().getCells()[current.getPosition()];
         if (cell instanceof PricedCell) {
             buyBtn.setDisable(((PricedCell) cell).hasOwner());
@@ -372,7 +376,7 @@ public class GameController extends BaseController implements Initializable, Dat
         rollBtn.setDisable(false);
         buyBtn.setDisable(true);
         sellBtn.setDisable(true);
-        tradeBtn.setDisable(true);
+        tradeBtn.setDisable(false);
         doneBtn.setDisable(true);
         upgradeBtn.setDisable(true);
         payBtn.setDisable(true);
@@ -382,6 +386,9 @@ public class GameController extends BaseController implements Initializable, Dat
     public void removePlayer(Player player) {
         root.getChildren().remove(markers.get(player));
         markers.remove(player);
+        dialogHelper.displayMessage(player.getName() + " lost the game");
+        updateButtonStates();
+        updatePlayerBalances();
     }
 
     @FXML
@@ -393,6 +400,7 @@ public class GameController extends BaseController implements Initializable, Dat
     @FXML
     private void onBuyClick() {
         current.buy((PricedCell) game.getBoard().getCells()[current.getPosition()]);
+        detailedNode.setData(game.getCells()[current.getPosition()]);
         updateButtonStates();
     }
 
@@ -404,7 +412,7 @@ public class GameController extends BaseController implements Initializable, Dat
 
     @FXML
     private void onTradeClick() {
-
+        choosePlayerToTrade();
     }
 
     @FXML
@@ -439,5 +447,33 @@ public class GameController extends BaseController implements Initializable, Dat
     public void movePlayer(Player player) {
         markers.get(player).moveTo(getCoordinatesByIndex(player.getPosition()));
         updateButtonStates();
+    }
+
+    private void choosePlayerToTrade() {
+        Player selected = dialogHelper.selectPlayer(current, markers.keySet());
+        if (selected == null) {
+            return;
+        }
+
+        openTradeDialog(selected);
+
+    }
+
+    private void openTradeDialog(Player with) {
+        dialogHelper.tradeDialog(current, with);
+        updateButtonStates();
+    }
+
+    @Override
+    public void announceWinner(Player player) {
+        Dialog<Object> dialog = new Dialog<Object>();
+        dialog.setTitle("Winner");
+        dialog.setHeaderText(String.format("Congratulations!!! %s have won the game", player.getName()));
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        dialog.setResultConverter(buttonType -> {
+            sceneManager.changeScene(SceneTag.HOME);
+            return null;
+        });
+        dialog.show();
     }
 }

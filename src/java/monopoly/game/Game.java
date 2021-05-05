@@ -95,4 +95,9 @@ public class Game implements IGame {
     public void movePlayer(Player player) {
         ui.movePlayer(player);
     }
+
+    @Override
+    public void announceWinner(Player player) {
+        ui.announceWinner(player);
+    }
 }
